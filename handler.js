@@ -219,8 +219,10 @@ export async function handler(chatUpdate) {
             }, time)
         }
 
-        if (m.isBaileys)
-            return
+        if (m.isBaileys && m.fromMe)
+          return
+        /*if (m.isBaileys)
+            return*/
         m.exp += Math.ceil(Math.random() * 10)
 
         let usedPrefix
