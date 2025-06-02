@@ -40,7 +40,7 @@ let handler = async (m, { conn, args }) => {
 
     if (/webp|image|video/.test(mime)) {
       if (/video/.test(mime) && ((q.msg || q).seconds > 10)) 
-        return m.reply(`《✧》¡El video no puede durar más de 10 segundos!`)
+        return m.reply(`El video no puede durar más de 10 segundos!`)
       
       img = await q.download?.()
       if (!img) return conn.reply(m.chat, `《✧》Por favor, envía una imagen o video para hacer un sticker`, m)
