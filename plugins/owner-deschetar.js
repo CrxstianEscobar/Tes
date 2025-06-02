@@ -25,8 +25,6 @@ let handler = async (m, { conn, text }) => {
         }
     }
 
-    console.log(`Usuario procesado: ${who}`); // Para depuración
-
     if (!global.db) global.db = {};
     if (!global.db.data) global.db.data = {};
     if (!global.db.data.users) global.db.data.users = {};
@@ -40,16 +38,6 @@ let handler = async (m, { conn, text }) => {
     users[who].level = 0;
 
     await global.db.write();
-
-    for (let subbot of global.conns) {
-        try {
-            if (subbot.user) {
-                await subbot.sendMessage(m.chat, { text: `/deschetar ${who.split`@`[0]}` });
-            }
-        } catch (error) {
-            console.log(`${msm} Error al deschetar al usuario: ${error.message}`);
-        }
-    }
 
     await m.reply(
         `${xowner} *@${who.split`@`[0]}* *Ahora tienes los recursos de antes*`,
