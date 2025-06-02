@@ -58,6 +58,8 @@ export async function handler(chatUpdate) {
                     user.afkReason = ''
                 if (!('banned' in user))
                     user.banned = false
+                if (!('muto' in user))
+                    user.muto = false
                 if (!('useDocument' in user))
                     user.useDocument = false
                 if (!isNumber(user.level))
@@ -75,6 +77,7 @@ export async function handler(chatUpdate) {
                     afk: -1,
                     afkReason: '',
                     banned: false,
+                    muto: false,
                     useDocument: false,
                     bank: 0,
                     level: 0,
