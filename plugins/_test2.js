@@ -24,51 +24,76 @@ handler.command = /^testlive$/i;
 handler.owner = true;
 
 export default handler;*/
-import { randomBytes } from "crypto"
-import axios from "axios"
 
-let handler = async (m, { conn, text }) => {
-    if (!text) throw `${emoji} ¿Cómo puedo ayudarte hoy?`;
-    try {
-        conn.reply(m.chat, m);
-        let data = await chatGpt(text);
-        await conn.sendMessage(m.chat, { 
-            text: '*Demo:* ' + data
-        }, { quoted: m });
 
-    } catch (err) {
-        m.reply('error cik:/ ' + err);
+import { sticker } from '../lib/sticker.js'
+import uploadFile from '../lib/uploadFile.js'
+import uploadImage from '../lib/uploadImage.js'
+import { webp2png } from '../lib/webp2mp4.js'
+
+let handler = async (m, { conn, args }) => {
+  let stiker = false
+  try {
+    let q = m.quoted ? m.quoted : m
+    let mime = (q.msg || q).mimetype || q.mediaType || ''
+    let img, out
+
+    if (/webp|image|video/.test(mime)) {
+      if (/video/.test(mime) && ((q.msg || q).seconds > 10)) 
+        return m.reply(`《✧》¡El video no puede durar más de 10 segundos!`)
+      
+      img = await q.download?.()
+      if (!img) return conn.reply(m.chat, `《✧》Por favor, envía una imagen o video para hacer un sticker`, m)
+
+      try {
+        stiker = await sticker(img, false, global.sticker2, global.sticker1)
+      } catch (e) {
+        console.error(e)
+        if (/webp/.test(mime)) out = await webp2png(img)
+        else if (/image/.test(mime)) out = await uploadImage(img)
+        else if (/video/.test(mime)) out = await uploadFile(img)
+        if (typeof out !== 'string') out = await uploadImage(img)
+        stiker = await sticker(false, out, global.sticker2, global.sticker1)
+      }
+    } else if (args[0]) {
+      if (isUrl(args[0])) {
+        stiker = await sticker(false, args[0], global.sticker2, global.sticker1)
+      } else {
+        return m.reply(`《✧》El link es incorrecto`)
+      }
     }
-}
 
-handler.help = ['demo *<texto>*'];
-handler.command = ['demo', 'openai'];
-handler.tags = ['ai'];
-handler.group = true;
-
-export default handler;
-
-async function chatGpt(query) {
-    try {
-        const { id_ } = (await axios.post("https://chat.chatgptdemo.net/new_chat", { user_id: "crqryjoto2h3nlzsg" }, { headers: { "Content-Type": "application/json" } })).data;
-
-        const json = { "question": query, "chat_id": id_, "timestamp": new Date().getTime() };
-
-        const { data } = await axios.post("https://chat.chatgptdemo.net/chat_api_stream", json, { headers: { "Content-Type": "application/json" } });
-        const cek = data.split("data: ");
-
-        let res = [];
-
-        for (let i = 1; i < cek.length; i++) {
-            if (cek[i].trim().length > 0) {
-                res.push(JSON.parse(cek[i].trim()));
-            }
+  } catch (e) {
+    console.error(e)
+    if (!stiker) stiker = e
+  } finally {
+    if (stiker) {
+      conn.sendFile(m.chat, stiker, 'sticker.webp', '', m, true, {
+        contextInfo: {
+          forwardingScore: 200,
+          isForwarded: false,
+          externalAdReply: {
+            showAdAttribution: false,
+            title: global.packname,
+            body: global.botname,
+            mediaType: 2,
+            sourceUrl: global.redes,
+            thumbnail: global.icons
+          }
         }
-
-        return res.map((a) => a.choices[0].delta.content).join("");
-
-    } catch (error) {
-        console.error("Error parsing JSON:", error);
-        return 404;
+      }, { quoted: m })
+    } else {
+      return conn.reply(m.chat, '《✧》Por favor, envía una imagen, video o link válido para hacer un sticker', m)
     }
+  }
 }
+
+handler.help = ['sticker *<img|url>*']
+handler.tags = ['sticker']
+handler.command = ['s2', 'sticker2', 'stiker2']
+handler.group = false
+handler.register = false
+
+export default handler
+
+const isUrl = (text) => /(https?:\/\/[^\s]+(\.jpg|\.jpeg|\.png|\.gif|\.webp|\.mp4))/i.test(text)
