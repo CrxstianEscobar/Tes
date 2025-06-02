@@ -37,7 +37,7 @@ export async function handler(chatUpdate) {
                 if (!isNumber(user.exp))
                     user.exp = 0
                 if (!isNumber(user.diamantes))
-                    user.diamantes = 10
+                    user.diamantes = 15
                 if (!('premium' in user)) 
                     user.premium = false
                 if (!user.premium) 
@@ -47,6 +47,8 @@ export async function handler(chatUpdate) {
                 if (!user.registered) {
                     if (!('name' in user))
                         user.name = m.name
+                    if (!('description' in user))
+                        user.description = ''
                     if (!isNumber(user.age))
                         user.age = -1
                     if (!isNumber(user.regTime))
@@ -56,6 +58,8 @@ export async function handler(chatUpdate) {
                     user.afk = -1
                 if (!('afkReason' in user))
                     user.afkReason = ''
+                if (!('role' in user))
+                    user.role = 'Novato'
                 if (!('banned' in user))
                     user.banned = false
                 if (!('muto' in user))
@@ -66,12 +70,15 @@ export async function handler(chatUpdate) {
                     user.level = 0
                 if (!isNumber(user.bank))
                     user.bank = 0
+                if (!isNumber(user.warn))
+                    user.warn = 0
             } else
                 global.db.data.users[m.sender] = {
                     exp: 0,
-                    diamantes: 10,
+                    diamantes: 15,
                     registered: false,
                     name: m.name,
+                    description: '',
                     age: -1,
                     regTime: -1,
                     afk: -1,
@@ -81,6 +88,9 @@ export async function handler(chatUpdate) {
                     useDocument: false,
                     bank: 0,
                     level: 0,
+                    role: 'Novato',
+                    premium: false,
+                    premiumTime: 0,
                 }
             let chat = global.db.data.chats[m.chat]
             if (typeof chat !== 'object')
@@ -90,6 +100,8 @@ export async function handler(chatUpdate) {
                     chat.isBanned = false
                 if (!('welcome' in chat))
                     chat.welcome = false
+                if (!('sAutoresponder' in chat))
+                    chat.sAutoresponder = ''
                 if (!('sWelcome' in chat))
                     chat.sWelcome = ''
                 if (!('sBye' in chat))
@@ -107,19 +119,27 @@ export async function handler(chatUpdate) {
                 if (!('onlyLatinos' in chat))
                     chat.onlyLatinos = false
                 if (!('nsfw' in chat))
-                    chat.nsfw = false
-                if (!('autoAceptar' in chat)) chat.autoAceptar = false                   
+                    chat.nsfw = false           
                 if (!('reaction' in chat))
                     chat.reaction = false
                 if (!('simi' in chat))
                     chat.simi = false
-                if (!('autolevelup' in chat))  chat.autolevelup = false
+                if (!('autolevelup' in chat))  
+                    chat.autolevelup = false
+                if (!('autoresponder' in chat)) 
+                    chat.autoresponder = false
+                if (!('autoAceptar' in chat)) 
+                    chat.autoAceptar = false
+                if (!('autoRechazar' in chat)) 
+                    chat.autoRechazar = false
                 if (!('antiBot' in chat))
                      chat.antiBot = false
                 if (!('antiBot2' in chat))
                      chat.antiBot2 = false
                 if (!('antiver' in chat))
                     chat.antiver = false
+                if (!('antifake' in chat))
+                    chat.antifake = false
                 if (!('delete' in chat))
                     chat.delete = false
                 if (!isNumber(chat.expired))
@@ -128,22 +148,26 @@ export async function handler(chatUpdate) {
                 global.db.data.chats[m.chat] = {
                     isBanned: false,
                     welcome: false,
+                    sAutoresponder: '',
                     sWelcome: '',
                     sBye: '',
                     sKick: '',
                     delete: false,
                     audios: false,
                     detect: true,
-                    antiLink: false,
-                    antiLink2: false,
                     onlyLatinos: false,
                     simi: false,
                     autolevelup: false,
+                    autoresponder: false,
+                    autoAceptar: false,
+                    autoRechazar: false,
+                    antiLink: false,
+                    antiLink2: false,
                     antiBot: false,
                     antiBot2: false,
+                    antifake: false,
                     antiver: false,
-                    nsfw: false, 
-                    autoAceptar: false,
+                    nsfw: false,
                     reaction: false,
                     expired: 0, 
                 }
@@ -153,18 +177,16 @@ export async function handler(chatUpdate) {
                if (!('self' in settings)) settings.self = false
                if (!('restrict' in settings)) settings.restrict = true
                 if (!('jadibotmd' in settings)) settings.jadibotmd = false
-               if (!('autobio' in settings)) settings.autobio = false
-                if (!('antiPrivate' in settings)) settings.antiPrivate = false
-                if (!('autoread' in settings)) settings.autoread = false
+                if (!('antiPrivate' in settings)) settings.antiPrivate = true
+                if (!('autoread' in settings)) settings.autoread = true
                 if (!('autoread2' in settings)) settings.autoread2 = false
                 if (!('antiSpam' in settings)) settings.antiSpam = false
             } else global.db.data.settings[this.user.jid] = {
                 self: false,
                 restrict: true,
                 jadibotmd: false,
-                autobio: false,
-                antiPrivate: false,
-                autoread: false,
+                antiPrivate: true,
+                autoread: true,
                 autoread2: false,
                 antiSpam: false,
                 status: 0
@@ -377,7 +399,7 @@ global.db.data.users[m.sender].spam = new Date * 1
                 else
                     m.exp += xp
                 if (!isPrems && plugin.diamantes && global.db.data.users[m.sender].diamantes < plugin.diamantes * 1) {
-                    conn.reply(m.chat, `*Se agotaron tus Diamantes 💎*`, m)
+                    conn.reply(m.chat, `*Se agotaron tus ${moneda}*`, m)
                     continue
                 }
                 let extra = {
@@ -425,7 +447,7 @@ global.db.data.users[m.sender].spam = new Date * 1
                         }
                     }
                     if (m.diamantes)
-                        conn.reply(m.chat, `Utilizaste *${+m.diamantes}* Diamantes 💎`, m)
+                        conn.reply(m.chat, `Utilizaste *${+m.diamantes}* ${moneda}`, m)
                 }
                 break
             }
@@ -488,33 +510,10 @@ global.db.data.users[m.sender].spam = new Date * 1
        }
      function pickRandom(list) { return list[Math.floor(Math.random() * list.length)]}
        }}
-/*
-export async function deleteUpdate(message) {
-try {
-const { fromMe, id, participant } = message
-if (fromMe) return 
-let msg = this.serializeM(this.loadMessage(id))
-let chat = global.db.data.chats[msg?.chat] || {}
-if (!chat?.delete) return 
-if (!msg) return 
-if (!msg?.isGroup) return 
-const antideleteMessage = `╭•┈•〘❌ 𝗔𝗡𝗧𝗜 𝗗𝗘𝗟𝗘𝗧𝗘 ❌〙•┈• ◊
-│❒ 𝗨𝗦𝗨𝗔𝗥𝗜𝗢:
-│• @${participant.split`@`[0]}
-│
-│❒ 𝗔𝗰𝗮𝗯𝗮 𝗱𝗲 𝗲𝗹𝗶𝗺𝗶𝗻𝗮𝗿 𝘂𝗻 𝗺𝗲𝗻𝘀𝗮𝗷𝗲
-│𝗿𝗲𝗲𝗻𝘃𝗶𝗮𝗻𝗱𝗼... ⏱️
-╰•┈•〘❌ 𝗔𝗡𝗧𝗜 𝗗𝗘𝗟𝗘𝗧𝗘 ❌〙•┈• ◊`.trim();
-await this.sendMessage(msg.chat, {text: antideleteMessage, mentions: [participant]}, {quoted: msg})
-this.copyNForward(msg.chat, msg).catch(e => console.log(e, msg))
-} catch (e) {
-console.error(e)
-}}
-*/
+
 global.dfail = (type, m, conn) => {
 
 let user2 = m.pushName || 'Anónimo'
-
 const msg = {
 rowner: '```☕ Es𝗍ᥲ 𝖿ᥙᥒᥴі᥆́ᥒ s᥆ᥣ᥆ ⍴ᥙᥱძᥱ sᥱr ᥙ𝗍іᥣіzᥲძᥲ ⍴᥆r ᥱᥣ ᥴrᥱᥲძ᥆r ძᥱᥣ ᑲ᥆𝗍.```', 
 owner: '```☕ Es𝗍ᥲ 𝖿ᥙᥒᥴі᥆́ᥒ s᥆ᥣ᥆ sᥱ ⍴ᥙᥱძᥱ ᥙsᥲr ⍴᥆r ᥱᥣ ⍴r᥆⍴іᥱ𝗍ᥲrі᥆ ძᥱᥣ ᑲ᥆𝗍.```', 
