@@ -757,21 +757,32 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       break
     default:
       if (!/[01]/.test(command)) return conn.reply(m.chat, `
-*ゲ◜៹ Bot Creadores ៹◞ゲ*
+\`𝗙𝘂𝗻𝗰𝗶𝗼𝗻𝗲𝘀 𝗗𝗶𝘀𝗽𝗼𝗻𝗶𝗯𝗹𝗲𝘀\`
 
-${usedPrefix + command} antispam
-${usedPrefix + command} antiprivado
-${usedPrefix + command} status
-${usedPrefix + command} restrict
-
-*ゲ◜៹ Bot Administrador ៹◞ゲ*
+*ゲ◜៹ 𝖠𝖽𝗆𝗂𝗇𝗂𝗌𝗍𝗋𝖺𝖽𝗈𝗋𝖾𝗌 ៹◞ゲ*
 
 ${usedPrefix + command} welcome 
 ${usedPrefix + command} antibot
-${usedPrefix + command} reaccion
-${usedPrefix + command} simi  
-${usedPrefix + command} modoadmin  
-${usedPrefix + command} antilink`, m)
+${usedPrefix + command} antibot2
+${usedPrefix + command} antiarabes
+${usedPrefix + command} antilink
+${usedPrefix + command} antiver
+${usedPrefix + command} antidelete
+${usedPrefix + command} nsfw
+${usedPrefix + command} modoadmin
+${usedPrefix + command} reaction
+${usedPrefix + command} audios
+${usedPrefix + command} detect
+${usedPrefix + command} chatbot
+
+*ゲ◜៹ 𝖣𝖾𝗌𝖺𝗋𝗋𝗈𝗅𝗅𝖺𝖽𝗈𝗋 ៹◞ゲ*
+
+${usedPrefix + command} antispam
+${usedPrefix + command} antiprivado
+${usedPrefix + command} autoread
+${usedPrefix + command} restrict
+${usedPrefix + command} status
+${usedPrefix + command} subbots`, fkontak)
       throw false
   }
 
