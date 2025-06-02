@@ -34,7 +34,7 @@ global.baileys = 'V 6.7.16'
 global.vs = '3.0.0'
 global.nameqr = 'ShadowUltra-MD'
 global.namebot = 'Shadow Ultra - MD'
-global.sessions = 'Sessions'
+global.sessions = 'ShadowSession'
 global.jadi = 'JadiBots' 
 global.ShadowJadibts = true
 
