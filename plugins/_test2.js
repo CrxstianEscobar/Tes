@@ -46,7 +46,7 @@ let handler = async (m, { conn, args }) => {
       if (!img) return conn.reply(m.chat, `《✧》Por favor, envía una imagen o video para hacer un sticker`, m)
 
       try {
-        stiker = await sticker(img, false, global.sticker2, global.sticker1)
+        stiker = await sticker(img, false, global.packname, global.author)
       } catch (e) {
         console.error(e)
         if (/webp/.test(mime)) out = await webp2png(img)
@@ -57,7 +57,7 @@ let handler = async (m, { conn, args }) => {
       }
     } else if (args[0]) {
       if (isUrl(args[0])) {
-        stiker = await sticker(false, args[0], global.sticker2, global.sticker1)
+        stiker = await sticker(false, args[0], global.packname, global.author)
       } else {
         return m.reply(`《✧》El link es incorrecto`)
       }
